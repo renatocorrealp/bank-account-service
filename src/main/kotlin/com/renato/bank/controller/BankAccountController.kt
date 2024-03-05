@@ -1,10 +1,12 @@
 package com.renato.bank.controller
 
+import com.renato.bank.controller.exception.BadRequestException
 import com.renato.bank.controller.request.mapper.toCreateBankAccountDTO
 import com.renato.bank.service.dto.mapper.toCreateBankAccountResponse
 import com.renato.bank.controller.response.CreateBankAccountResponse
 import com.renato.bank.service.BankAccountService
 import com.renato.bank.service.dto.CreateBankAccountRequest
+import com.renato.bank.service.exception.PersonNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,8 +24,13 @@ class BankAccountController(@Autowired private val bankAccountService: BankAccou
 
     @PostMapping("/create", MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE)
     fun createBankAccount(@RequestBody createBankAccountRequest: CreateBankAccountRequest): CreateBankAccountResponse {
-        val newBankAccount = bankAccountService.createBankAccount(createBankAccountRequest.toCreateBankAccountDTO())
-        return newBankAccount.toCreateBankAccountResponse();
+        try {
+            val newBankAccount = bankAccountService.createBankAccount(createBankAccountRequest.toCreateBankAccountDTO())
+            return newBankAccount.toCreateBankAccountResponse();
+        } catch (e: PersonNotFoundException) {
+            // TODO configure logger
+            throw BadRequestException(e.message);
+        }
     }
 
 }

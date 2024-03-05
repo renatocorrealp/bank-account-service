@@ -6,12 +6,15 @@ spring:
     username: postgres
     password: postgres
   jpa:
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
-        default_schema: backservice
+        default_schema: bankservice
+
 server:
-  port: 8088
+  port: 8089
   servlet:
     context-path: /bank-account-service
+
+person-service:
+  client:
+    url: http://localhost:8088/person-service
